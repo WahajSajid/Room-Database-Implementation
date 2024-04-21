@@ -2,8 +2,10 @@ package com.example.todo
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlin.collections.List
 
 
@@ -14,4 +16,13 @@ interface Dao {
 
     @Insert
     fun insert(vararg toDoItems: ToDoItems)
+    @Query("DELETE FROM ToDoItems WHERE id = :Id")
+    fun deleteItemById(Id:Int)
+
+    @Update
+    suspend fun updateId(id: ToDoItems)
+
+    @Delete
+    suspend fun deleteItem(item:ToDoItems)
+
 }

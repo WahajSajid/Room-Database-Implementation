@@ -41,17 +41,6 @@ class AddNewItem : Fragment() {
             CoroutineScope(Dispatchers.IO).launch {
                 dao.insert(data)
             }
-            CoroutineScope(Dispatchers.IO).launch {
-                val getData : LiveData<List<ToDoItems>> =  dao.getAll()
-                withContext(Dispatchers.Main) {
-                    getData.observe(viewLifecycleOwner, Observer { students ->
-                        if (students != null && students.isNotEmpty()) {
-                            binding.textView.text = students[1].item
-                        }
-                    })
-                }
-            }
-
 
         }
 

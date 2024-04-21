@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class ToDoItems(
 @PrimaryKey(autoGenerate = true)
-val id:Int,
+var id:Int,
 val item:String
 ) {
     constructor(item: String) : this(id = 0, item = item)
