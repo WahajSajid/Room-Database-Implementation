@@ -18,7 +18,7 @@ class Adapter(private val itemsData:List<ToDoItems>):RecyclerView.Adapter<Adapte
     private lateinit var  clickListener: OnItemClickListener
 
     interface OnItemClickListener{
-        fun itemClickListener(position: Int,view:View)
+        fun itemClickListener(position: Int,textView:TextView)
         val mutex: Mutex
     }
     fun itemClickListener(listener: OnItemClickListener){
@@ -31,7 +31,7 @@ class Adapter(private val itemsData:List<ToDoItems>):RecyclerView.Adapter<Adapte
         init {
             deleteButton.setOnClickListener {
                 deleteButton.findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
-                    clickListener.mutex.withLock { clickListener.itemClickListener(adapterPosition,itemView) }
+                    clickListener.mutex.withLock { clickListener.itemClickListener(adapterPosition,itemText) }
                 }
 
             }

@@ -1,19 +1,13 @@
 package com.example.todo
 
 import android.annotation.SuppressLint
-import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.RenderProcessGoneDetail
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,7 +34,6 @@ class List : Fragment() {
         val dao: Dao = DataBase.getDatabase(requireContext().applicationContext).dao()
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-
         CoroutineScope(Dispatchers.IO).launch {
             val getData: LiveData<List<ToDoItems>> = dao.getAll()
             withContext(Dispatchers.Main) {
@@ -52,27 +45,16 @@ class List : Fragment() {
                         adapter.itemClickListener(@SuppressLint("SuspiciousIndentation")
                         object : Adapter.OnItemClickListener {
                             override val mutex: Mutex = Mutex()
-                            override fun itemClickListener(position: Int, view: View) {
-//                                Toast.makeText(context,"$position",Toast.LENGTH_SHORT).show()
+                            override fun itemClickListener(position: Int, textView: TextView) {
                                 CoroutineScope(Dispatchers.IO).launch {
-                                   dao.deleteItemById(position+1)
-//                                    withContext(Dispatchers.Main) {
-//                                        dao.getAll().observe(viewLifecycleOwner) { items ->
-//                                            CoroutineScope(Dispatchers.IO).launch {
-//                                                var currentId = 1
-//                                                for (item in items) {
-//                                                    if (item.id > position) {
-//                                                        item.id = currentId
-//                                                        dao.updateId(item)
-//                                                        currentId++
-//                                                    } else {
-//                                                        currentId = item.id
-//                                                    }
-//                                                }
-//                                            }
-//
-//                                        }
+                                    dao.delete(textView.text.toString())
+//                                    rearrangeDisplayOrder()
+//                                    val dataFromDataBase = dao.getAll()
+//                                    val updatedId = mutableListOf<ToDoItems>()
+//                                    for (i in 0 until updatedId.size) {
+//                                        updatedId[i].id = i + 1
 //                                    }
+//                                    dao.updateDisplayOrder(updatedId)
                                 }
                             }
                         })
@@ -83,7 +65,15 @@ class List : Fragment() {
                 })
             }
         }
-
         return binding.root
+    }
+
+    private suspend fun rearrangeDisplayOrder() {
+        val dao: Dao = DataBase.getDatabase(requireContext().applicationContext).dao()
+        val items = dao.getAll().value ?: return
+        items.forEachIndexed { _, item ->
+            item.displayOrder += 1
+        }
+        dao.updateDisplayOrder(items)
     }
 }

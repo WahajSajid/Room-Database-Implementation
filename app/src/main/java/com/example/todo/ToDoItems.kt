@@ -7,9 +7,10 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class ToDoItems(
-@PrimaryKey(autoGenerate = true)
-var id:Int,
-val item:String
+    @PrimaryKey(autoGenerate = true)
+    var id: Int,
+    val item: String,
+    var displayOrder:Int = 1
 ) {
     constructor(item: String) : this(id = 0, item = item)
 }

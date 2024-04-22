@@ -19,10 +19,16 @@ interface Dao {
     @Query("DELETE FROM ToDoItems WHERE id = :Id")
     fun deleteItemById(Id:Int)
 
-    @Update
-    suspend fun updateId(id: ToDoItems)
+
 
     @Delete
     suspend fun deleteItem(item:ToDoItems)
+
+    @Query("DELETE FROM ToDoItems WHERE item = :Item")
+    suspend fun delete(Item:String)
+
+
+    @Update
+    suspend fun updateDisplayOrder(items: List<ToDoItems>)
 
 }
